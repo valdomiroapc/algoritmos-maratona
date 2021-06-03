@@ -1,0 +1,64 @@
+void build(int no,int l,int r, vector<long long int> &arv,vector<long long int> &lazy, vi &elementos)
+{
+	lazy[no] = 0;
+	if(l == r)
+	{
+		arv[no] = elementos[l];
+		return;
+	}
+	int m = (l+r)/2;
+	build(no*2,l,m,arv,lazy,elementos);
+	build(no*2+1,m+1,r,arv,lazy,elementos);
+	arv[no] = min(arv[no*2],arv[no*2+1]);
+}
+void update_range(int no,int l,int r,int ll,int rr,int v,vector<long long int> &arv,vector<long long int> &lazy)
+{
+	if(lazy[no])
+	{
+		arv[no] += lazy[no];
+		if(l<r)
+		{
+			lazy[no*2] += lazy[no];
+			lazy[no*2+1] += lazy[no];
+		}
+		lazy[no] = 0;
+	}
+	if(l>rr or r<ll)
+		return; 
+	if(l>=ll and r<=rr)
+	{
+		arv[no] += v;
+		if(l<r)
+		{
+			lazy[no*2] += v;
+			lazy[no*2+1] += v;
+		}
+		return;
+	}
+	int m = (l+r)/2;
+	update_range(no*2,l,m,ll,rr,v,arv,lazy);	
+	update_range(no*2+1,m+1,r,ll,rr,v,arv,lazy);
+	arv[no] = min(arv[no*2],arv[no*2+1]);
+}
+long long int query(int no,int l,int r,int ll,int rr,vector<long long int> &arv,vector<long long int> &lazy)
+{
+	if(l>rr or r<ll)
+		return long_inf;
+	if(lazy[no])
+	{
+		arv[no] += lazy[no];
+		if(l<r)
+		{
+			lazy[no*2] += lazy[no];
+			lazy[no*2+1] += lazy[no];
+		}
+		lazy[no]=0;
+	}
+	if(l>=ll and r<=rr)
+		return arv[no];
+	int m = (l+r)/2;
+	long long int v1,v2;
+	v1=query(no*2,l,m,ll,rr,arv,lazy);
+	v2=query(no*2+1,m+1,r,ll,rr,arv,lazy);
+	return min(v1,v2);
+}
