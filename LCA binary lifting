@@ -1,0 +1,46 @@
+tempo = 0;
+int exp(int x,int e)
+{
+    if(e == 0)
+        return 1;
+    if(e == 1)
+        return x;
+    if(e % 2)
+        return x*exp(x*x,e/2);
+    return exp(x*x,e/2);
+}
+
+void dfs(int s,int p,vector< vector<int> > &grafo,vector< vector<int> > &ancestor, vector<int> &t_in,vector<int> &t_out,int L) // L = ceil(log2(n)), n -> número de vertices 
+{
+    t_in[s] = ++tempo;
+    ancestor[s][0] = p;
+    for(int i = 1;i<=N;i++)
+        ancestor[s][i] = ancestor[ancestor[s][i-1]][i-1];
+    for(int t:grafo[s])
+    {
+        if(t != p)
+            dfs(t,s,grafo,ancestor,t_in,t_out,N);
+    }
+    sequencia.pb(s);
+    t_out[s] = ++tempo;
+}
+
+int sobe(int u,int k,vector< vector<int> > &ancestor,int N)
+{
+    for(int j=N;j>=0;j--)
+    {
+        if(exp(2,j) <= k)
+        {
+            u = ancestor[u][j];
+            k -= exp(2,j);
+        }
+    }
+    return u;
+}
+
+void pre_calc( vector< vector<int> > &ancestor,  vector< vector<int> > &grafo,int n,int N)
+{
+    vector<int> t_in(n),t_out(n);
+    tempo = 0;
+    dfs(1,0,grafo,ancestor,t_in,t_out,N);
+}
