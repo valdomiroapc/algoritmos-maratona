@@ -1,4 +1,4 @@
-tempo = 0;
+int L; // L = ceil(log2(n))
 int exp(int x,int e)
 {
     if(e == 0)
@@ -9,38 +9,101 @@ int exp(int x,int e)
         return x*exp(x*x,e/2);
     return exp(x*x,e/2);
 }
-
-void dfs(int s,int p,vector< vector<int> > &grafo,vector< vector<int> > &ancestor, vector<int> &t_in,vector<int> &t_out,int L) // L = ceil(log2(n)), n -> número de vertices 
+int L;
+void dfs(int s,int p,int d,vector< vector<pair<int,int> > > &grafo, vector< vector<int> > &ancestor, vector< vector<long long int> > &distancia, vector< int > &altura)
 {
-    t_in[s] = ++tempo;
     ancestor[s][0] = p;
-    for(int i = 1;i<=N;i++)
-        ancestor[s][i] = ancestor[ancestor[s][i-1]][i-1];
-    for(int t:grafo[s])
+    distancia[s][0] = d;
+    for(int i = 1;i<=L;i++)
     {
-        if(t != p)
-            dfs(t,s,grafo,ancestor,t_in,t_out,N);
+        ancestor[s][i] = ancestor[ancestor[s][i-1]][i-1];
+        distancia[s][i] = distancia[s][i-1] + distancia[ancestor[s][i-1]][i-1];
     }
-    sequencia.pb(s);
-    t_out[s] = ++tempo;
+    for(auto t:grafo[s])
+    {
+        if(t.first != p)
+        {
+            altura[t.first] = altura[s]+1;
+            dfs(t.first,s,t.second,grafo,ancestor,distancia,altura);
+        }
+    }
 }
 
-int sobe(int u,int k,vector< vector<int> > &ancestor,int N)
+int query_lca(int u,int v, vector< vector<int> > &ancestor, vector< int > &altura)
 {
-    for(int j=N;j>=0;j--)
+    if(altura[u] < altura[v])
+        swap(u,v);
+    for(int i= L;i>=0;i--)
     {
-        if(exp(2,j) <= k)
+        if((altura[u] - exp(2,i)) >= altura[v])
+            u = ancestor[u][i];
+    }
+    if(u == v)
+        return u;
+    for(int i=L;i>=0;i--)
+    {
+        if(ancestor[u][i] != ancestor[v][i])
         {
-            u = ancestor[u][j];
-            k -= exp(2,j);
+            u = ancestor[u][i];
+            v = ancestor[v][i];
+        }
+    }
+    return ancestor[u][0];
+}
+int climb(int u,int k, vector< vector<int> > &ancestor)
+{
+    for(int i=L;i>=0;i--)
+    {
+        if(exp(2,i) <= k)
+        {
+            u = ancestor[u][i];
+            k -= exp(2,i);
         }
     }
     return u;
 }
-
-void pre_calc( vector< vector<int> > &ancestor,  vector< vector<int> > &grafo,int n,int N)
+long long int query_dist(int u,int v, vector< vector<int> > &ancestor, vector< vector<long long int> > &distancia, vector< int > &altura)
 {
-    vector<int> t_in(n),t_out(n);
-    tempo = 0;
-    dfs(1,0,grafo,ancestor,t_in,t_out,N);
+    long long int du,dv;
+    du=dv=0;
+    if(altura[u] < altura[v])
+        swap(u,v);
+    for(int i= L;i>=0;i--)
+    {
+        if((altura[u] - exp(2,i)) >= altura[v])
+        {
+            du += distancia[u][i];
+            u = ancestor[u][i];
+        }
+    }
+    if(u == v)
+        return du;
+    for(int i=L;i>=0;i--)
+    {
+        if(ancestor[u][i] != ancestor[v][i])
+        {
+            du+=distancia[u][i];
+            dv+=distancia[v][i];
+            u = ancestor[u][i];
+            v = ancestor[v][i];
+        }
+    }
+    long long int ans = du + dv + distancia[u][0] + distancia[v][0];
+    return ans;
+}
+int query_kth(int u,int v,int k, vector< vector<int> > &ancestor, vector< int > &altura)
+{
+    int anc =  query_lca(u,v,ancestor,altura);
+    int alt_u = altura[u] - altura[anc] + 1;
+    int alt_v = altura[v] - altura[anc];
+    if(k <= alt_u)
+    {
+        return climb(u,k-1,ancestor);
+    }
+    else
+    {
+        k -= alt_u;
+        k = alt_v - k;
+        return climb(v,k,ancestor);
+    }
 }
