@@ -1,0 +1,42 @@
+long long int win_nim_game(vector<long long int> &nim_piles)
+{
+    long long int answer = 0;
+    for(long long int i:nim_piles)
+        answer = answer ^ i;
+    return answer;
+}
+long long int f(long long int x)
+{
+    if(x%2LL == 0LL)
+        return x/2LL;
+    return f(x/2LL);
+}
+vector<long long int> grundy(vector<long long int> &piles)
+{
+    vector<long long int> nim_piles;
+    for(int i=0;i<piles.size();i++)
+        nim_piles.pb(f(piles[i]));
+    return nim_piles;
+}
+int main()
+{
+    int t;
+    cin>>t;
+    while(t--)
+    {
+        int n;
+        cin>>n;
+        vector<long long int> piles, nim_piles;
+        long long int x;
+        for(int i =0;i<n;i++)
+        {
+            cin>>x;
+            piles.pb(x);
+        }
+        nim_piles = grundy(piles);
+        if(win_nim_game(nim_piles))
+            puts("YES");
+        else
+            puts("NO");
+    }
+} 
