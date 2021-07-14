@@ -16,3 +16,9 @@ O Grundy number de uma pilha de tamanho 0 é 0. 0 é o estado perdedor do jogo N
 Um jogo que contém subjogos resolvíveis, pode ser resolvido, calculando o Grundy number para todos os subjogos, gerando assim um Nim, e por fim, calculando o ou exclusivo
 para o conjunto de Grundy numbers gerados.
 
+------
+A melhor forma de achar a estratégia vencedora de um jogo, é identificar uma propriedade P tal que:
+1-Os eventuais estados perdedores satisfazem P. 
+2-De um estado que satisfaz P, é impossível se mover para outro que satisfaz P.
+3-De um estado que não satisfaz P, é impossível se mover para outro que não satisfaz P.
+
