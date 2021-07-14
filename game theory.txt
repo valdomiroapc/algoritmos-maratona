@@ -1,0 +1,18 @@
+Características de jogos que são resolviveis
+1- Jogos em turnos
+2- Em qualquer estado do jogo, ambos os jogadores tem os mesmos movimentos
+3- Ambos os jogadores tem informação perfeita sobre o jogo. Não há sigilo envolvido
+4- O jogador incapaz de fazer um movimento perde o jogo.
+
+Jogos resolvíveis podem ser reduzidos a um jogo de Nim com uma pilha, o tamanho da pilha é chamado de grundy number/ nimber
+
+O estado perdedor de um jogo de Nim, é onde o ou exclusivo dos tamanhos das pilhas resulta em 0.
+
+O teorema de Sprague Grundy pode transformar qualquer jogo resolvivel em um jogo de Nim.
+
+Cada estado de um jogo de Nim tem um número Grundy associado que é o menor número inteiro, que não é grundy number de nenhum estado atingível do estado em questão.
+O Grundy number de uma pilha de tamanho 0 é 0. 0 é o estado perdedor do jogo Nim.
+
+Um jogo que contém subjogos resolvíveis, pode ser resolvido, calculando o Grundy number para todos os subjogos, gerando assim um Nim, e por fim, calculando o ou exclusivo
+para o conjunto de Grundy numbers gerados.
+
