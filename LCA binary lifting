@@ -1,5 +1,5 @@
 int L; // L = ceil(log2(n))
-int exp(int x,int e)
+int exp(int x,int e) // exponenciação rápida
 {
     if(e == 0)
         return 1;
@@ -10,7 +10,7 @@ int exp(int x,int e)
     return exp(x*x,e/2);
 }
 int L;
-void dfs(int s,int p,int d,vector< vector<pair<int,int> > > &grafo, vector< vector<int> > &ancestor, vector< vector<long long int> > &distancia, vector< int > &altura)
+void dfs(int s,int p,int d,vector< vector<pair<int,int> > > &grafo, vector< vector<int> > &ancestor, vector< vector<long long int> > &distancia, vector< int > &altura) // pre-processamento
 {
     ancestor[s][0] = p;
     distancia[s][0] = d;
@@ -29,7 +29,7 @@ void dfs(int s,int p,int d,vector< vector<pair<int,int> > > &grafo, vector< vect
     }
 }
 
-int query_lca(int u,int v, vector< vector<int> > &ancestor, vector< int > &altura)
+int query_lca(int u,int v, vector< vector<int> > &ancestor, vector< int > &altura) // devolve o lca de dois vertices
 {
     if(altura[u] < altura[v])
         swap(u,v);
@@ -50,7 +50,7 @@ int query_lca(int u,int v, vector< vector<int> > &ancestor, vector< int > &altur
     }
     return ancestor[u][0];
 }
-int climb(int u,int k, vector< vector<int> > &ancestor)
+int climb(int u,int k, vector< vector<int> > &ancestor) // devolve o k-ésimo ancestral
 {
     for(int i=L;i>=0;i--)
     {
@@ -62,7 +62,7 @@ int climb(int u,int k, vector< vector<int> > &ancestor)
     }
     return u;
 }
-long long int query_dist(int u,int v, vector< vector<int> > &ancestor, vector< vector<long long int> > &distancia, vector< int > &altura)
+long long int query_dist(int u,int v, vector< vector<int> > &ancestor, vector< vector<long long int> > &distancia, vector< int > &altura) // devolve a distancia entre dois vertices (se aplicável)
 {
     long long int du,dv;
     du=dv=0;
@@ -91,7 +91,7 @@ long long int query_dist(int u,int v, vector< vector<int> > &ancestor, vector< v
     long long int ans = du + dv + distancia[u][0] + distancia[v][0];
     return ans;
 }
-int query_kth(int u,int v,int k, vector< vector<int> > &ancestor, vector< int > &altura)
+int query_kth(int u,int v,int k, vector< vector<int> > &ancestor, vector< int > &altura) // devolve o k-ésimo nó no caminho entre dois vértices.
 {
     int anc =  query_lca(u,v,ancestor,altura);
     int alt_u = altura[u] - altura[anc] + 1;
