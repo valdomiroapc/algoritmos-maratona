@@ -1,0 +1,14 @@
+int LIS(vector<int> a)
+{
+    vector<int> t;
+    t.pb(-2000000000);
+    for(int i:a)
+    {
+        int pos = lower_bound(t.begin(),t.end(),i) - t.begin();
+        if(pos == t.size())
+            t.pb(i);
+        else
+            t[pos] = i;
+    }
+    return t.size()-1;
+}
