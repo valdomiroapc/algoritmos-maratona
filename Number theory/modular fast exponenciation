@@ -1,0 +1,8 @@
+long long int exp(long long int x,long long int e, long long int m)
+{
+    if(!e)
+        return 1;
+    if(e&1)
+        return ((x%m)*(exp(((x%m)*(x%m))%m,e/2,m)%m))%m;
+    return exp(((x%m)*(x%m))%m,e/2,m)%m;
+}
