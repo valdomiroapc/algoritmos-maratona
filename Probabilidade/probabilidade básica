@@ -1,0 +1,13 @@
+1-P(O) = 0
+2-P(S) = 1
+
+probabilidade de A ou B:
+-Probabilidade do evento resultante ser A ou B
+    P(AuB) = P(A) + P(B) - P(A^B)
+  
+probabilidade condicional:
+ -Probabilidade de ocorrer um evento A, dado que um evento B ocorreu.
+    P(A|B) = P(A^B)/P(B)
+
+Regra do produto de probabilidades:
+    P(A^B) = P(A|B)*P(B), com P > 0
