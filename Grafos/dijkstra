@@ -1,0 +1,25 @@
+vector<int> dijkstra(int s,vector<vector<pair<int,int> > > &grafo,int U)
+{
+    vector<int> ans(grafo.size(),U);
+    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int> > > fila;
+    ans[s] = 0;
+    fila.push({0,s});
+    while(!fila.empty())
+    {
+        int davez = fila.top().second;
+        int distancia = fila.top().first;
+        fila.pop();
+        if(distancia > ans[davez])
+            continue;
+        for(auto i:grafo[davez])
+        {
+            int prox = i.first;
+            int dist = i.second;
+            if(distancia+dist >= ans[prox])
+                continue;
+            ans[prox] = distancia+dist;
+            fila.push({ans[prox],prox});
+        }
+    }
+    return ans;
+}
