@@ -2,11 +2,11 @@ struct node
 {
     int destiny;
     int cap;
-    int residual_cap;
+    int re_idx;
     node(int dest,int c,int rc){
         destiny = dest;
         cap = c;
-        residual_cap = rc;
+        re_idx = rc;
     }
 };
 struct EdmondsKarp
@@ -14,7 +14,10 @@ struct EdmondsKarp
     vector< vector< node > > graph;
     int inf = 1000000000;
     EdmondsKarp(int n){
-        graph.resize(n+1);
+        vector<node> vazio;
+        for(int i=0;i<n;i++){
+            graph.pb(vazio);
+        }
     }
     int send_flow(int s,int t,vector<pair<int,int> > &pai){
         for(int i=0;i<pai.size();i++)
@@ -25,13 +28,15 @@ struct EdmondsKarp
         while(!fila.empty()){
             int davez = fila.front().first;
             int flow = fila.front().second;
+            fila.pop();
             for(int i = 0;i<graph[davez].size();i++){
                 node edge = graph[davez][i];
                 if(pai[edge.destiny].first == -1 and edge.cap){
                     pai[edge.destiny] = {davez,i};
                     int new_flow = min(flow,edge.cap);
-                    if(edge.destiny == t)
+                    if(edge.destiny == t){
                         return new_flow;
+                    }
                     fila.push({edge.destiny,new_flow});
                 }
             }
@@ -39,10 +44,10 @@ struct EdmondsKarp
         return 0;
     }
     int maxflow(int s,int t){
-        vector<pair<int,int> > pai;
+        vector<pair<int,int> > pai(graph.size()+1);
         int new_flow;
         int max_flow=0;
-        while(new_flow = send_flow(s,t,pai)){
+        while((new_flow = send_flow(s,t,pai))){
             max_flow+=new_flow;
             int cur = t;
             int prev;
@@ -50,10 +55,15 @@ struct EdmondsKarp
                 prev = pai[cur].first;
                 int pos_i = pai[cur].second;
                 graph[prev][pos_i].cap-=new_flow;
-                graph[prev][pos_i].residual_cap+=new_flow;
+                int re_idx = graph[prev][pos_i].re_idx;
+                graph[cur][re_idx].cap+=new_flow;
                 cur = prev;
             }
         }
         return max_flow;
+    }
+    void create_edge(int u,int v,int cap){
+        graph[u].pb(node(v,cap,graph[v].size()));
+        graph[v].pb(node(u,0,graph[u].size()-1));
     }
 };
