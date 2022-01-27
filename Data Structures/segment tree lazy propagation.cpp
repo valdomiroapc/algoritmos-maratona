@@ -31,7 +31,6 @@ struct segtree{
         int m = (l+r)/2;
         long long int left = query(no*2,l,m,p,q);
         long long int right = query(no*2+1,m+1,r,p,q);
-        tree[no] = left+right;
         return left+right;
     }
     void update(int no,int l,int r,int p,int q,int val){
