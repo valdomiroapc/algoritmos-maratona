@@ -1,0 +1,60 @@
+struct tree{
+    vector<vector<int> > g;
+    vector<int> height;
+    int root;
+    int nodes;
+    int lim;
+    vector<vector<int> > ancestors;
+    tree(int n){
+       g.resize(n);
+       height.resize(n);
+       root=0;
+       nodes = g.size();
+       lim = ceil(log2(nodes));
+    }
+    tree(){}
+    void precalc(int u,int p,int h){
+        height[u] = h;
+        ancestors[u][0]=p;
+        int anc;
+        for(int i=1;i<lim;i++){
+            anc = ancestors[u][i-1];
+            ancestors[u][i] = ancestors[anc][i-1];
+        }
+        for(auto v:g[u]){
+            if(v==p)
+                continue;
+            precalc(v,u,h+1);
+        }
+    }
+    void binary_lifting(){
+        vector<int> item(lim);
+        ancestors.assign(nodes,item);
+        precalc(root,root,0);
+    }
+    int find_ancestor(int u,int k){
+        int p = u;
+        for(int i=lim-1;i>=0;i--){
+            if((1<<i)<=k){
+                k-=(1<<i);
+                p=ancestors[p][i];
+            }
+        }
+        return p;
+    }
+    int find_LCA(int u,int v){
+        if(height[u]>height[v])
+            swap(u,v);
+        v = find_ancestor(v,height[v]-height[u]);
+        if(u==v){
+            return u;
+        }
+        for(int i=lim-1;i>=0;i--){
+            if(ancestors[u][i]!=ancestors[v][i]){
+                u = ancestors[u][i];
+                v = ancestors[v][i];
+            }
+        }
+        return ancestors[u][0];
+    }
+};
