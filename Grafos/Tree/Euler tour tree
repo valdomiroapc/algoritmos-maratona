@@ -1,0 +1,32 @@
+struct tree{
+    vector<vector<int> > g;
+    vector<int>id,end_id;
+    int root;
+    int pos;
+    int nodes;
+    tree(int n){
+       g.resize(n);
+       root=0;
+       nodes = g.size();
+    }
+    tree(){}
+    void dfs_ett(int u,int p){
+        id[u]=pos++;
+        for(auto v:g[u]){
+            if(v==p)
+                continue;
+            dfs_ett(v,u);
+        }
+        end_id[u]=pos;
+    }
+    void euler_tour_tree(){
+        pos = 0;
+        id.resize(nodes);
+        end_id.resize(nodes);
+        dfs_ett(root,root);
+    }
+    void create_edge(int i,int j){
+        g[i].pb(j);
+        g[j].pb(i);
+    }
+};
