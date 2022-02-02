@@ -1,0 +1,40 @@
+struct hash_str{
+    long long int m,p;
+    vector<long long int> p_to,inv_p;
+    vector<long long int> substring_hash;
+    hash_str(long long int mm=1e9+9,long long int pp=31){
+        m=mm;
+        p=pp;
+    }
+    long long int get_hash_value(string &s){
+        long long int p_aux = 1;
+        long long int ans = 0;
+        for(auto c:s){
+            cout<<ans<<" "<<p_aux<<endl;
+            ans=(ans+((c-'a'+1)*p_aux)%m)%m;
+            p_aux = (p_aux*p)%m;
+        }
+        return ans;
+    }
+    void compute_substr_hash(string &s){
+        p_to.resize(s.size());
+        p_to[0] = 1;
+        for(int i=1;i<s.size();i++)
+            p_to[i] = (p_to[i-1]*p)%m;
+        inv_p.resize(s.size());
+        for(int i=0;i<inv_p.size();i++)
+            inv_p[i] = exp(p_to[i],m-2,m);
+        substring_hash.resize(s.size());
+        long long int ant=0;
+        for(int i=0;i<s.size();i++){
+            substring_hash[i] = (ant+((s[i]-'a'+1)*p_to[i])%m)%m;
+            ant = substring_hash[i];
+        }
+    }
+    long long int get_substring_hash(int l,int r){
+        long long int prefix = 0;
+        if(l>0)
+            prefix = substring_hash[l-1];
+        return ((m+(substring_hash[r]-prefix))%m*inv_p[l])%m;
+    }
+};
